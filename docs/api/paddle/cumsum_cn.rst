@@ -11,6 +11,9 @@ cumsum
 
 **注意**：结果的第一个元素和输入的第一个元素相同。
 
+.. note::
+    别名支持: 参数名 ``input`` 可替代 ``x`` 和 ``dim`` 可替代 ``axis``，如 ``input=tensor_x`` 等价于 ``x=tensor_x``， ``dim=2`` 等价于 ``axis=2``。
+
 参数
 :::::::::
     - **x** (Tensor) - 累加的输入，需要进行累加操作的 Tensor。别名 ``input``。

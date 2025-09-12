@@ -13,6 +13,9 @@ silu 激活层。计算公式如下：
 
 其中，:math:`x` 为输入的 Tensor。
 
+.. note::
+    别名支持: 参数名 ``input`` 可替代 ``x``，如 ``input=tensor_x`` 等价于 ``x=tensor_x``。
+
 参数
 ::::::::::
 
