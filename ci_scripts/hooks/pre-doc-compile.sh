@@ -26,20 +26,14 @@ API_MAPPING_URL="https://raw.githubusercontent.com/PaddlePaddle/PaConvert/master
 GLOBAL_VAR_URL="https://raw.githubusercontent.com/PaddlePaddle/PaConvert/master/paconvert/global_var.py"
 ATTRIBUTE_MAPPING_URL="https://raw.githubusercontent.com/PaddlePaddle/PaConvert/master/paconvert/attribute_mapping.json"
 
-# Define backup URLs
-BACKUP_API_ALIAS_MAPPING_URL="https://paddle-paconvert.bj.bcebos.com/api_alias_mapping.json"
-BACKUP_API_MAPPING_URL="https://paddle-paconvert.bj.bcebos.com/api_mapping.json"
-BACKUP_GLOBAL_VAR_URL="https://paddle-paconvert.bj.bcebos.com/global_var.py"
-BACKUP_ATTRIBUTE_MAPPING_URL="https://paddle-paconvert.bj.bcebos.com/attribute_mapping.json"
-
 # Check for proxy settings
 PROXY=""
 if [ -n "$https_proxy" ]; then
     PROXY="$https_proxy"
-    echo "INFO: find proxy"
+    echo "INFO: Using proxy"
 elif [ -n "$http_proxy" ]; then
     PROXY="$http_proxy"
-    echo "INFO: find proxy"
+    echo "INFO: Using proxy"
 else
     echo "INFO: No proxy detected, downloading directly."
 fi
@@ -51,12 +45,28 @@ else
     CURL_PROXY_ARGS=""
 fi
 
-# Download API mapping files with retry
+# Handle failure: copy cached file and exit
+handle_failure() {
+    local cached_file="${APIMAPPING_ROOT}/cached_pytorch_api_mapping_cn.md"
+    local target_file="${APIMAPPING_ROOT}/pytorch_api_mapping_cn.md"
+
+    if [ -f "$cached_file" ]; then
+        echo "INFO: Copying cached file to target: $cached_file -> $target_file"
+        cp "$cached_file" "$target_file"
+        echo "INFO: Successfully copied cached file to $target_file"
+        exit 0
+    else
+        echo "ERROR: Cached file not found at $cached_file"
+        exit 1
+    fi
+}
+
+# Download file with retry and failure handling
 download_file() {
     local url=$1
     local dest=$2
     local filename=$(basename "$dest")
-    local max_retries=5
+    local max_retries=3
     local retry_count=0
 
     echo "INFO: Starting download of ${filename} from ${url}"
@@ -75,70 +85,38 @@ download_file() {
     done
 
     echo "ERROR: Failed to download ${filename} after $max_retries attempts"
-    return 1
+    handle_failure
 }
 
-# Download each file with detailed logging
-echo "INFO: Downloading API alias mapping file"
-if ! download_file "${API_ALIAS_MAPPING_URL}" "${TOOLS_DIR}/api_alias_mapping.json"; then
-    echo "INFO: Trying backup URL for API alias mapping file"
-    if ! download_file "${BACKUP_API_ALIAS_MAPPING_URL}" "${TOOLS_DIR}/api_alias_mapping.json"; then
-        echo "ERROR: API alias mapping download failed (both main and backup URLs). Exiting."
-        exit 1
-    fi
-fi
-
-echo "INFO: Downloading API mapping file"
-if ! download_file "${API_MAPPING_URL}" "${TOOLS_DIR}/api_mapping.json"; then
-    echo "INFO: Trying backup URL for API mapping file"
-    if ! download_file "${BACKUP_API_MAPPING_URL}" "${TOOLS_DIR}/api_mapping.json"; then
-        echo "ERROR: API mapping download failed (both main and backup URLs). Exiting."
-        exit 1
-    fi
-fi
-
-echo "INFO: Downloading global variable file"
-if ! download_file "${GLOBAL_VAR_URL}" "${TOOLS_DIR}/global_var.py"; then
-    echo "INFO: Trying backup URL for global variable file"
-    if ! download_file "${BACKUP_GLOBAL_VAR_URL}" "${TOOLS_DIR}/global_var.py"; then
-        echo "ERROR: Global variable download failed (both main and backup URLs). Exiting."
-        exit 1
-    fi
-fi
-
-echo "INFO: Downloading attribute mapping file"
-if ! download_file "${ATTRIBUTE_MAPPING_URL}" "${TOOLS_DIR}/attribute_mapping.json"; then
-    echo "INFO: Trying backup URL for attribute mapping file"
-    if ! download_file "${BACKUP_ATTRIBUTE_MAPPING_URL}" "${TOOLS_DIR}/attribute_mapping.json"; then
-        echo "ERROR: Attribute mapping download failed (both main and backup URLs). Exiting."
-        exit 1
-    fi
-fi
-
-# Check if all files exist before proceeding
-if [ ! -f "${TOOLS_DIR}/api_alias_mapping.json" ] || \
-   [ ! -f "${TOOLS_DIR}/api_mapping.json" ] || \
-   [ ! -f "${TOOLS_DIR}/global_var.py" ] || \
-   [ ! -f "${TOOLS_DIR}/attribute_mapping.json" ]; then
-    echo "ERROR: One or more API mapping files are missing after download"
-    echo "Missing files:"
-    if [ ! -f "${TOOLS_DIR}/api_alias_mapping.json" ]; then echo "  - api_alias_mapping.json"; fi
-    if [ ! -f "${TOOLS_DIR}/api_mapping.json" ]; then echo "  - api_mapping.json"; fi
-    if [ ! -f "${TOOLS_DIR}/global_var.py" ]; then echo "  - global_var.py"; fi
-    if [ ! -f "${TOOLS_DIR}/attribute_mapping.json" ]; then echo "  - attribute_mapping.json"; fi
-    exit 1
-fi
+# Download all API mapping files
+download_file "${API_ALIAS_MAPPING_URL}" "${TOOLS_DIR}/api_alias_mapping.json"
+download_file "${API_MAPPING_URL}" "${TOOLS_DIR}/api_mapping.json"
+download_file "${GLOBAL_VAR_URL}" "${TOOLS_DIR}/global_var.py"
+download_file "${ATTRIBUTE_MAPPING_URL}" "${TOOLS_DIR}/attribute_mapping.json"
 
 echo "INFO: All API mapping files successfully downloaded"
 
+# Run the remaining scripts with failure handling
 echo "INFO: Running get_api_difference_info.py"
 if ! python "${APIMAPPING_ROOT}/tools/get_api_difference_info.py"; then
-    echo "ERROR: get_api_difference_info.py failed. Please check the script."
-    exit 1
+    handle_failure
 fi
 
 echo "INFO: Running generate_pytorch_api_mapping.py"
 if ! python "${APIMAPPING_ROOT}/tools/generate_pytorch_api_mapping.py"; then
-    echo "ERROR: generate_pytorch_api_mapping.py failed. Please check the script."
-    exit 1
+    handle_failure
+fi
+
+# Create backup of generated file
+BACKUP_FILE="${APIMAPPING_ROOT}/cached_pytorch_api_mapping_cn.md"
+GENERATED_FILE="${APIMAPPING_ROOT}/pytorch_api_mapping_cn.md"
+
+if [ -f "$GENERATED_FILE" ]; then
+    echo "INFO: Generated API mapping file successfully created at $GENERATED_FILE"
+    echo "INFO: Creating backup file: $BACKUP_FILE"
+    cp "$GENERATED_FILE" "$BACKUP_FILE"
+    echo "INFO: Successfully created backup file at $BACKUP_FILE"
+else
+    echo "ERROR: Generated API mapping file not found at $GENERATED_FILE"
+    handle_failure
 fi
