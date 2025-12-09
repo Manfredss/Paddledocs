@@ -33,7 +33,13 @@ from extract_api_from_docs import extract_params_desc_from_rst_file
 
 arguments = [
     # flags, dest, type, default, help
-    ["--rst-files", "rst_files", str, None, "api rst files, sperated by space"],
+    [
+        "--rst-files",
+        "rst_files",
+        str,
+        None,
+        "api rst files, separated by space",
+    ],
     ["--api-info", "api_info_file", str, None, "api_info_all.json filename"],
 ]
 
@@ -184,7 +190,7 @@ def check_api_parameters(rstfiles, apiinfo):
     """check function's parameters same as its origin definition.
 
     TODO:
-    1. All the documents of classes are skiped now. As
+    1. All the documents of classes are skipped now. As
         (1) there ars many class methods in documents, may break the scripts.
         (2) parameters of Class should be checked with its `__init__` method.
     2. Some COMPLICATED annotations may break the scripts.

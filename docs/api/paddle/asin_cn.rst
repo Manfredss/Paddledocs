@@ -17,7 +17,11 @@ arcsine 函数。
 ::::::::::::
 
     - **x** (Tensor) - 输入的 Tensor，数据类型为：float32, float64, float16, bfloat16,
+<<<<<<< HEAD
             uint8, int8, int16, int32, int64, complex64 or complex128。
+=======
+      uint8, int8, int16, int32, int64, complex64 or complex128。
+>>>>>>> f8195973e9f1b4932f5b49b932f82ea3ebb71e0d
     - **name** (str，可选) - 具体用法请参见 :ref:`api_guide_Name`，一般无需设置，默认值为 None。
 
 返回
