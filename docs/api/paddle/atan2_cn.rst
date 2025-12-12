@@ -3,7 +3,7 @@
 atan2
 -------------------------------
 
-.. py:function:: paddle.atan2(x, y, name=None)
+.. py:function:: paddle.atan2(x, y, name=None, *, out=None)
 
 
 
@@ -26,6 +26,7 @@ atan2
     - **x**  (Tensor) - 输入的 Tensor，数据类型为：int32、int64、float16、float32、float64。
     - **y**  (Tensor) - 输入的 Tensor，数据类型为：int32、int64、float16、float32、float64。
     - **name**  (str，可选) - 操作的名称（可选，默认值为 None）。更多信息请参见 :ref:`api_guide_Name`。
+    - **out** (Tensor，可选)- 输出的结果。该参数为仅关键字参数，默认值为 None。
 
 返回
 :::::::::
