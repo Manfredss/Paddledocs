@@ -14,7 +14,6 @@ count_nonzero
    - **keepdim** (bool，可选) - 是否在输出 Tensor 中保留被统计的维度。如果 ``keepdim`` 为 True，则输出 Tensor 和 ``x`` 具有相同的维度（被统计的维度大小为 1）；否则，输出 Tensor 会在 ``axis`` 上进行 squeeze 操作。默认值为 False。
    - **name** (str，可选) - 具体用法请参见 :ref:`api_guide_Name`，一般无需设置，默认值为 None。
 
-
 返回
 ::::::::::
     ``Tensor``，沿着 ``axis`` 统计输入 Tensor 中非零元素的个数，数据类型 int64。
