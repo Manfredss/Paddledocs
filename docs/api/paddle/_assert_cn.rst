@@ -17,4 +17,12 @@ _assert
 代码示例
 ::::::::::::
 
-COPY-FROM: paddle._assert
+.. code-block:: pycon
+
+    >>> import paddle
+    >>> # Non-tensor condition
+    >>> paddle._assert(1 == 1, "This should pass")
+
+    >>> # Tensor condition
+    >>> x = paddle.to_tensor([True])
+    >>> paddle._assert(x, "Tensor assertion")
