@@ -37,7 +37,7 @@ train(mode=True)
     - **mode** (bool，可选) - 是否设置为训练模式。默认值为 True。
 
 **返回**
-Layer，self
+Layer (返回网络层)，self (返回自身)
 
 **代码示例**
 
@@ -430,7 +430,7 @@ set_state_dict(state_dict, use_structured_name=True)
 
 COPY-FROM: paddle.nn.Layer.set_state_dict
 
-to(device=None, dtype=None, blocking=True)
+to(device=None, dtype=None, blocking=True, \*, non_blocking=False)
 '''''''''
 
 移动和/或转换 parameters 和 buffers。

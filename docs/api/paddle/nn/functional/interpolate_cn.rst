@@ -5,13 +5,11 @@ interpolate
 
 .. py:function:: paddle.nn.functional.interpolate(x, size=None, scale_factor=None, mode='nearest', align_corners=False, align_mode=0, data_format=None, recompute_scale_factor=None, antialias=False, name=None)
 
-本函数有两种功能，取决于传入的参数：
+本函数有两种功能，取决于传入的参数组合（其中 ``input`` 是 ``x`` 的别名，两者等价）：
 
-1. ``interpolate(input, size, scale_factor, mode, align_corners, recompute_scale_factor, antialias)``：
-    PyTorch 兼容的插值方式。
+1. **PyTorch 兼容方式**： ``interpolate(x, size, scale_factor, mode, align_corners, recompute_scale_factor, antialias)``
 
-2. ``interpolate(x, size, scale_factor, mode, align_corners, align_mode, data_format, recompute_scale_factor, name)``：
-    PaddlePaddle 原始的插值实现，详见以下文档。
+2. **PaddlePaddle 原始方式**： ``interpolate(x, size, scale_factor, mode, align_corners, align_mode, data_format, recompute_scale_factor, name)``
 
 调整一个 batch 中图片的大小。
 

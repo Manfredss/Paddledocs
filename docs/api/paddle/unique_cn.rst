@@ -39,7 +39,7 @@ unique
     - **return_counts** (bool，可选) - 如果为 True，则还返回每个独有元素在输入 Tensor 中的个数。
     - **axis** (int，可选) - 指定选取独有元素的轴。默认值为 None，将输入平铺为 1-D 的 Tensor 后再选取独有元素。别名 ``dim``。
     - **dtype** (str|paddle.dtype|np.dtype，可选) - 用于设置 ``index`` ， ``inverse`` 或者 ``counts`` 的类型，应该为 int32 或者 int64。默认：int64。
-    - **sorted** (bool，可选) - 不影响返回结果，与 PyTorch 保持一致。默认值为 True。
+    - **sorted** (bool，可选) - 无论该参数取值如何，返回结果始终按升序排列。该参数仅用于与 PyTorch 签名兼容，不影响实际行为。默认值为 True。
     - **name** (str，可选) - 具体用法请参见 :ref:`api_guide_Name`，一般无需设置，默认值为 None。
 
 
