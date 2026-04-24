@@ -23,13 +23,4 @@ Tensor，``x`` 的逆矩阵，维度和数据类型与 ``x`` 相同。
 代码示例
 ::::::::::::
 
-.. code-block:: pycon
-
-    >>> import paddle
-
-    >>> mat = paddle.to_tensor([[2, 0], [0, 2]], dtype='float32')
-    >>> inv = paddle.inverse(mat)
-    >>> print(inv)
-    Tensor(shape=[2, 2], dtype=float32, place=Place(cpu), stop_gradient=True,
-    [[0.50000000, 0.        ],
-     [0.        , 0.50000000]])
+COPY-FROM: paddle.inverse
