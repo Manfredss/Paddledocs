@@ -19,7 +19,7 @@ randint
 ::::::::::
     - **out** (Tensor，可选) - 输出 Tensor，若不为 ``None``，计算结果将保存在该 Tensor 中，默认值为 ``None``。
     - **device** (PlaceLike，可选) - 返回 Tensor 所在的设备。默认值为 ``None``。
-    - **pin_memory** (bool，可选) - 如果设置为 True，返回的 Tensor 将分配在锁页内存中。仅对 CPU Tensor 有效。默认值为 False。
+    - **pin_memory** (bool，可选) - 如果设置为 True，返回的 Tensor 将分配在锁页内存中。默认值为 False。
     - **requires_grad** (bool，可选) - 是否需要自动求导记录返回 Tensor 上的操作。默认值为 False。
 
 返回
